@@ -53,7 +53,6 @@ $("#downloadBtn").on("click", function() {
   $("#url").html(pastedURL);
   var newPastedURL = pastedURL.replace(/\/[^\/]*$/g, "?__a=1");
   downloadImg(newPastedURL);
-  console.log(newPastedURL);
 });
 
 // run image load
@@ -67,12 +66,13 @@ function downloadImg(url) {
   } else {
     // get query from url
     params = new URLSearchParams(window.location.search);
+    var newParams = unescape(params).replace(/\/[^\/]*$/g, "?__a=1");
     // show decode url
-    $("#url").html(unescape(params));
+    $("#url").html(unescape(newParams));
   }
 
   // get json data
-  $.getJSON(unescape(params), function(dataq) {
+  $.getJSON(unescape(newParams), function(dataq) {
 
   console.log(dataq);
 
