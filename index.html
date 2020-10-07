@@ -62,7 +62,7 @@ function downloadImg(url) {
   var start = new Date().getTime();
   var params = "";
   if (url != undefined) {
-    params = url;
+    newParams = url;
   } else {
     // get query from url
     params = new URLSearchParams(window.location.search);
