@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<title>Save Instagram Post by Sanbron Liong</title>
+	<style>
+    body {
+      font-family: 'Inter', sans-serif;
+      text-align:center;
+    }
+    #url {
+      display:none;
+      
+    }
+    #pastedURL {
+      width:300px;
+    }
+    #pastedURL, #downloadBtn {
+      padding:12px;
+      font-size:14px;
+    }
+    #img img {
+      width:200px;
+      display:inline-block;
+      margin:0 10px 10px 0;
+    }
+    #computeTime {
+      font-size:10px;
+      color:rgb(155, 155, 155);
+    }
+	</style>
+</head>
+<body>
+	<h1>Save Instagram Post</h1>
+	<p>Created by Sanbron</p>
+  <input id="pastedURL" placeholder="https://www.instagram.com/p/CEujPvBsIS7/" type="text">
+  <button id="downloadBtn">Download</button>
+  <div id="url"></div>
+  <br><br>
+	<div id="img"><p style="color:rgb(155, 155, 155)">Paste Instagram post url above and click "Download"</p></div>
+	<div id="computeTime"></div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</script> 
+<script>
+// run if loaded from url
+downloadImg();
+
+// on button click
+$("#downloadBtn").on("click", function() {
+  var pastedURL = $("#pastedURL").val();
+  $("#url").html(pastedURL);
+  var newPastedURL = pastedURL.replace(/\/[^\/]*$/g, "?__a=1");
+  downloadImg(newPastedURL);
+  console.log(newPastedURL);
+});
+
+// run image load
+function downloadImg(url) {
+  
+  // record processing time
+  var start = new Date().getTime();
+  var params = "";
+  if (url != undefined) {
+    params = url;
+  } else {
+    // get query from url
+    params = new URLSearchParams(window.location.search);
+    // show decode url
+    $("#url").html(unescape(params));
+  }
+
+  // get json data
+  $.getJSON(unescape(params), function(dataq) {
+
+  console.log(dataq);
+
+  // declare array
+  var imagesURL = [];
+  var imageURL;
+
+  // search in json
+  // if Carousel
+  if (dataq.graphql.shortcode_media.hasOwnProperty('edge_sidecar_to_children')) {
+    var carousel = dataq.graphql.shortcode_media.edge_sidecar_to_children.edges;
+    for (i=0; i < carousel.length; i++) {
+      imagesURL.push(carousel[i].node.display_url);
+    }
+  } else {
+    imagesURL.push(dataq.graphql.shortcode_media.display_url);
+  }
+
+  // clear container
+  $("#img").html("");
+  for (imageURL of imagesURL) {
+    $("#img").append("<img src='"+imageURL+"'>");
+  }
+
+  $("#computeTime").html(new Date().getTime() - start + " ms");
+  });
+}
+
+</script>
+</html>
