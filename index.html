@@ -24,6 +24,8 @@
       width:300px;
       display:inline-block;
       margin:0 10px 10px 0;
+      transition:0.2s ease;
+      border-radius:6px;
     }
     #img p {
       color:rgb(155, 155, 155);
@@ -35,15 +37,18 @@
 	</style>
 </head>
 <body>
+  <br><br>
+  <img src="instagram-new-outline.png" height="30px">
 	<h1>Save Instagram Post</h1>
-	<p>Created by Sanbron</p>
+  <p>Created by Sanbron</p>
+  <br>
   <input id="pastedURL" placeholder="https://www.instagram.com/p/CEujPvBsIS7/" type="text">
-  <button id="downloadBtn">Download</button>
+  <button id="downloadBtn">Search</button>
   <div id="url"></div>
   <br><br>
-  <div id="img"><p>Paste Instagram post url above and click "Download"</p></div>
+  <div id="img"><p>Paste Instagram post url above and click "Search"</p></div>
   <div id="computeTime"></div>
-  <div id="footer">Save Instagram Post v0.2</div>
+  <div id="footer">Save Instagram Post v0.4 - <a href="versions.html">See versions log</a></div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
 </script> 
@@ -86,35 +91,62 @@ $(document).ready(function() {
       url:unescape(newParams),
       success:
         function(dataq) {
-          console.log(dataq);
+          //console.log(dataq);
           // declare array
-          var imagesURL = [];
-          var imageURL;
+          var images = [];
           // search in json
           // if Carousel
-          if (dataq.graphql.shortcode_media.hasOwnProperty('edge_sidecar_to_children')) {
-            var carousel = dataq.graphql.shortcode_media.edge_sidecar_to_children.edges;
-            for (i=0; i < carousel.length; i++) {
-              imagesURL.push(carousel[i].node.display_url);
+          if (dataq.hasOwnProperty('graphql')) {
+            if (dataq.graphql.shortcode_media.hasOwnProperty('edge_sidecar_to_children')) {
+              var carousel = dataq.graphql.shortcode_media.edge_sidecar_to_children.edges;
+              for (i=0; i < carousel.length; i++) {
+                images.push({
+                  ImageName: carousel[i].node.id,
+                  ImageURL: carousel[i].node.display_url
+                });
+              }
+            } else {
+              images.push({
+                ImageName: dataq.graphql.shortcode_media.id,
+                ImageURL: dataq.graphql.shortcode_media.display_url
+              });
             }
-          } else {
-            imagesURL.push(dataq.graphql.shortcode_media.display_url);
+            // clear container
+            $("#img").html("<p>Right-click 'Save image as..' download.</p>");
+            for (image of images) {
+              $("#img").append("<img src='"+image['ImageURL']+"'>");
+            }
+            $("#computeTime").html(new Date().getTime() - start + " ms");
           }
-          // clear container
-          $("#img").html("");
-          for (imageURL of imagesURL) {
-            $("#img").append("<img src='"+imageURL+"'>");
-          }
-          $("#computeTime").html(new Date().getTime() - start + " ms");
         },
-      error: function (xhr, ajaxOptions, thrownError){
-        if(xhr.status==404) {
-          $("#img").html("<p style='color:red'>It's a private Instagram profile innit? or it's an invalid URL.</p>");
-        }
+        statusCode: {
+          404: function() {
+            $("#img").html("<p style='color:red'>It's a private Instagram profile innit? or it's an invalid URL.</p>");
+          }
       },
       async: false
     });
   }
+  function forceDownload(link){
+    var url = link.getAttribute("data-href");
+    var fileName = link.getAttribute("download");
+    link.innerText = "Working...";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function(){
+        var urlCreator = window.URL || window.webkitURL;
+        var imageUrl = urlCreator.createObjectURL(this.response);
+        var tag = document.createElement('a');
+        tag.href = imageUrl;
+        tag.download = fileName;
+        document.body.appendChild(tag);
+        tag.click();
+        document.body.removeChild(tag);
+        link.innerText="Download Image";
+    }
+    xhr.send();
+}
 });
 
 
