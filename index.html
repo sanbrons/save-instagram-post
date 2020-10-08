@@ -72,7 +72,7 @@ function downloadImg(url) {
   }
 
   // get json data
-  $.getJSON(unescape(newParams), function(dataq) {
+  $.post(unescape(newParams), function(dataq) {
 
   console.log(dataq);
 
