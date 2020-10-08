@@ -46,7 +46,7 @@
   <button id="downloadBtn">Search</button>
   <div id="url"></div>
   <br><br>
-  <div id="img"><p>Paste Instagram post url above and click "Search"</p></div>
+  <div id="img"><p>Paste Instagram post url above and click "Search" 👆</p></div>
   <div id="computeTime"></div>
   <div id="footer">Save Instagram Post v0.4 - <a href="versions.html">See versions log</a></div>
 </body>
@@ -65,7 +65,7 @@ $(document).ready(function() {
       var newPastedURL = pastedURL.replace(/\/[^\/]*$/g, "?__a=1");
       downloadImg(newPastedURL);
     } else {
-      $("#img").html("<p style='color:red'>Paste URL above, it's empty damn it!</p>");
+      $("#img").html("<p style='color:red'>Paste URL above, it's empty damn it! 🙄</p>");
     }
 
   });
@@ -121,7 +121,7 @@ $(document).ready(function() {
         },
         statusCode: {
           404: function() {
-            $("#img").html("<p style='color:red'>It's a private Instagram profile innit? or it's an invalid URL.</p>");
+            $("#img").html("<p style='color:red'>It's a private Instagram profile innit? or it's an invalid URL. 🤔</p>");
           }
       },
       async: false
