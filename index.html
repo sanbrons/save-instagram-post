@@ -25,6 +25,9 @@
       display:inline-block;
       margin:0 10px 10px 0;
     }
+    #img p {
+      color:rgb(155, 155, 155);
+    }
     #computeTime, #footer {
       font-size:10px;
       color:rgb(155, 155, 155);
@@ -38,9 +41,9 @@
   <button id="downloadBtn">Download</button>
   <div id="url"></div>
   <br><br>
-  <div id="img"><p style="color:rgb(155, 155, 155)">Paste Instagram post url above and click "Download"</p></div>
+  <div id="img"><p>Paste Instagram post url above and click "Download"</p></div>
   <div id="computeTime"></div>
-  <div id="footer">Save Instagram Post v0.1</div>
+  <div id="footer">Save Instagram Post v0.2</div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
 </script> 
@@ -52,9 +55,14 @@ $(document).ready(function() {
   // on button click
   $("#downloadBtn").on("click", function() {
     var pastedURL = $("#pastedURL").val();
-    $("#url").html(pastedURL);
-    var newPastedURL = pastedURL.replace(/\/[^\/]*$/g, "?__a=1");
-    downloadImg(newPastedURL);
+    if (pastedURL != "") {
+      $("#url").html(pastedURL);
+      var newPastedURL = pastedURL.replace(/\/[^\/]*$/g, "?__a=1");
+      downloadImg(newPastedURL);
+    } else {
+      $("#img").html("<p>Paste URL above, it's empty damn it!</p>");
+    }
+
   });
 
   // run image load
@@ -101,7 +109,9 @@ $(document).ready(function() {
         },
     async: false
 
-    });
+    })
+    .fail (function() { $("#img").html("<p>What kind of URL is that? Are you dumb?</p>");})
+    ;
   }
 });
 
