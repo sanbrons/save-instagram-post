@@ -21,6 +21,8 @@
     #pastedURL, #downloadBtn {
       padding:12px;
       font-size:14px;
+      height: 45px;
+      box-sizing: border-box;
     }
     #img img {
       width:300px;
@@ -53,7 +55,7 @@
 	<h1>Save Instagram Post</h1>
   <p>Created by Sanbron</p>
   <br>
-  <input id="pastedURL" placeholder="https://www.instagram.com/p/CEujPvBsIS7/" type="text">
+  <input id="pastedURL" onfocus="this.value=''" placeholder="https://www.instagram.com/p/CEujPvBsIS7/" type="text">
   <button id="downloadBtn">Search</button>
   <div id="url"></div>
   <br><br>
